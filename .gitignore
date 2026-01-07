@@ -40,3 +40,4 @@ Thumbs.db
 
 # Generated files
 *.generated.*
+.repolinter.json
