@@ -37,7 +37,7 @@ export default [
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
       '@typescript-eslint/explicit-function-return-type': 'off',
-      'quotes': ['error', 'single', { avoidEscape: true }],
+      quotes: ['error', 'single', { avoidEscape: true }],
     },
   },
 ]

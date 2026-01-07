@@ -14,7 +14,7 @@ When filing an issue, please check existing open and closed issues to make sure 
 
 Contributions via pull requests are much appreciated. Before sending us a pull request, please ensure that:
 
-1. You are working against the latest source on the *main* branch.
+1. You are working against the latest source on the _main_ branch.
 2. You check existing open, and recently merged, pull requests to make sure someone else hasn't addressed the problem already.
 3. You open an issue to discuss any significant work - we would hate for your time to be wasted.
 
@@ -36,11 +36,13 @@ GitHub provides additional documentation on [forking a repository](https://help.
 When contributing new examples, please follow these guidelines:
 
 ### Structure
+
 - Place examples in the appropriate category folder (`tools/`, `integrations/`, `runtime/`, `identity/`)
 - Include a `setup.ts` file if crypto polyfill is needed
 - Each example should be self-contained and runnable
 
 ### Code Style
+
 - Use TypeScript with strict mode
 - Follow existing code patterns in the repository
 - Use single quotes for strings
@@ -48,11 +50,13 @@ When contributing new examples, please follow these guidelines:
 - Handle errors gracefully with clear messages
 
 ### Documentation
+
 - Include a header comment explaining what the example demonstrates
 - Add prerequisites and run commands
 - Update the main README.md if adding a new category
 
 ### Best Practices
+
 - Include `maxSteps` constraints to prevent runaway token usage
 - Add delays between sequential API calls to avoid rate limits
 - Always clean up sessions in `finally` blocks

@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
 - Initial repository setup
 - CI/CD workflows (CI, CodeQL, Dependency Review)
 - Project documentation (README, CONTRIBUTING, SECURITY)
@@ -15,5 +16,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.0] - 2025-01-06
 
 ### Added
+
 - Initial release
 - Project scaffolding and configuration

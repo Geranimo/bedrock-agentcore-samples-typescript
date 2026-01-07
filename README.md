@@ -47,16 +47,19 @@ npm install
 ### Tools Examples
 
 #### Code Interpreter
+
 ```bash
 npx tsx examples/tools/code-interpreter/basic.ts
 ```
 
 #### Browser Automation
+
 ```bash
 npx tsx examples/tools/browser/basic.ts
 ```
 
 #### Combined Agent (Browser + Code Interpreter)
+
 ```bash
 npx tsx examples/tools/combined/research-assistant.ts
 ```
@@ -64,20 +67,21 @@ npx tsx examples/tools/combined/research-assistant.ts
 ### Framework Integration Examples
 
 #### Vercel AI SDK
+
 ```bash
 npx tsx examples/integrations/vercel-ai/agent-with-tools.ts
 ```
 
 ## Examples
 
-| Category | Example | Description |
-|----------|---------|-------------|
-| Tools | Code Interpreter | Execute Python code, file operations, shell commands |
-| Tools | Browser | Web scraping, page interaction, content extraction |
-| Tools | Combined | Multi-tool research agents and data pipelines |
-| Integrations | Vercel AI SDK | ToolLoopAgent with streaming and tool loops |
-| Runtime | Coming Soon | Managed runtime configurations |
-| Identity | Coming Soon | Authentication and authorization patterns |
+| Category     | Example          | Description                                          |
+| ------------ | ---------------- | ---------------------------------------------------- |
+| Tools        | Code Interpreter | Execute Python code, file operations, shell commands |
+| Tools        | Browser          | Web scraping, page interaction, content extraction   |
+| Tools        | Combined         | Multi-tool research agents and data pipelines        |
+| Integrations | Vercel AI SDK    | ToolLoopAgent with streaming and tool loops          |
+| Runtime      | Coming Soon      | Managed runtime configurations                       |
+| Identity     | Coming Soon      | Authentication and authorization patterns            |
 
 ## Running Examples
 
@@ -94,19 +98,23 @@ npx tsx examples/tools/combined/research-assistant.ts example1
 ## Troubleshooting
 
 ### "crypto is not defined"
+
 Each example includes a setup file that polyfills crypto for Node.js compatibility with `@ai-sdk/amazon-bedrock`.
 
 ### Rate Limits / "Too many tokens"
+
 - Run examples individually rather than all at once
 - Wait 60 seconds between runs
 - Examples include `maxSteps` constraints and delays to minimize this
 
 ### "Region is required"
+
 ```bash
 export AWS_REGION=us-west-2
 ```
 
 ### "Access Denied" or "Model not found"
+
 1. Enable Claude Sonnet 4 in your AWS Bedrock console
 2. Verify IAM permissions for `bedrock:InvokeModel` and `bedrock-agentcore:*`
 
