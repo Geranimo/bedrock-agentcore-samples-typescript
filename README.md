@@ -1,133 +1,159 @@
-# AWS Bedrock AgentCore Samples for TypeScript
+# Amazon Bedrock AgentCore TypeScript Samples
 
-This repository contains examples, tutorials, and use cases for building AI agents with [AWS Bedrock AgentCore](https://aws.amazon.com/bedrock/agentcore/) using TypeScript.
+TypeScript samples for building AI agents with Amazon Bedrock AgentCore.
 
-## Overview
+## What is Amazon Bedrock AgentCore?
 
-AWS Bedrock AgentCore provides managed primitives for building production-grade AI agents. This samples repository demonstrates how to use these primitives with popular frameworks and real-world patterns.
+Amazon Bedrock AgentCore is a fully managed service for deploying and running AI agents in production. It provides:
 
-## Prerequisites
+- **Runtime** — Managed infrastructure for hosting agents and MCP servers
+- **Identity** — Secure credential management for both accessing agents and agents accessing external services
+- **Memory** — Persistent conversation and context storage
+- **Gateway** — Unified MCP layer for agents accessing REST APIs, Lambda functions, and more
+- **Tools** — Built-in Code Interpreter and Browser capabilities
 
-- Node.js >= 20.0.0
-- AWS Account with Bedrock AgentCore access
-- AWS credentials configured (`AWS_REGION`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`)
-- Claude Sonnet 4 enabled in AWS Bedrock console
+## The TypeScript SDK
 
-## Installation
+The `bedrock-agentcore` SDK provides the building blocks for TypeScript agents.
 
-```bash
-# Clone the repository
-git clone https://github.com/awslabs/amazon-bedrock-agentcore-samples-typescript.git
-cd amazon-bedrock-agentcore-samples-typescript
+### Runtime
 
-# Install dependencies
-npm install
+`BedrockAgentCoreApp` wraps any agent framework in an HTTP server that follows the AgentCore Runtime protocol—handling request parsing, streaming responses, and session management for seamless deployment:
+
+```typescript
+import { BedrockAgentCoreApp } from 'bedrock-agentcore/runtime'
+
+const app = new BedrockAgentCoreApp({
+  invocationHandler: {
+    process: async function* (request, context) {
+      // Your agent logic here
+      yield { event: 'message', data: { text: 'Hello!' } }
+    },
+  },
+})
+
+app.run() // Starts HTTP server on :8080
 ```
+
+With a full agent framework:
+
+```typescript
+import { Agent, BedrockModel, tool } from '@strands-agents/sdk'
+import { BedrockAgentCoreApp } from 'bedrock-agentcore/runtime'
+import { z } from 'zod'
+
+const getWeather = tool({
+  name: 'getWeather',
+  description: 'Gets weather for a city',
+  inputSchema: z.object({ city: z.string() }),
+  callback: ({ city }) => `72°F and sunny in ${city}`,
+})
+
+const agent = new Agent({
+  model: new BedrockModel({ modelId: 'global.amazon.nova-2-lite-v1:0', region: 'us-east-1' }),
+  tools: [getWeather],
+})
+
+const app = new BedrockAgentCoreApp({
+  invocationHandler: {
+    requestSchema: z.object({ prompt: z.string() }),
+    process: async function* (request, context) {
+      for await (const event of agent.stream(request.prompt)) {
+        if (event.type === 'modelContentBlockDeltaEvent' && event.delta?.type === 'textDelta') {
+          yield { event: 'message', data: { text: event.delta.text } }
+        }
+      }
+    },
+  },
+})
+
+app.run()
+```
+
+→ [Runtime examples](./primitives/runtime/)
+
+### Tools
+
+Built-in tools for common agent capabilities.
+
+**Code Interpreter** — Execute Python, JavaScript, or shell commands in a secure sandbox:
+
+```typescript
+import { CodeInterpreterTools } from 'bedrock-agentcore/tools/code-interpreter/strands'
+
+const codeInterpreter = new CodeInterpreterTools({ region: 'us-east-1' })
+const tools = codeInterpreter.getTools() // executeCode, fileOperations, executeCommand
+
+const agent = new Agent({
+  model: new BedrockModel({ modelId: 'global.amazon.nova-2-lite-v1:0', region: 'us-east-1' }),
+  tools,
+})
+
+// Agent can now run: "Calculate the standard deviation of [1, 2, 3, 4, 5]"
+// → Executes Python in a secure sandbox, returns the result
+```
+
+→ [Code Interpreter examples](./primitives/tools/code-interpreter/)
+
+**Browser** — Automate web browsing with a remote browser session:
+
+```typescript
+import { BrowserTools } from 'bedrock-agentcore/tools/browser/strands'
+
+const browserTools = new BrowserTools({ region: 'us-east-1' })
+await browserTools.startSession()
+const tools = browserTools.getTools() // navigate, click, type, getText, screenshot
+
+const agent = new Agent({
+  model: new BedrockModel({ modelId: 'global.amazon.nova-2-lite-v1:0', region: 'us-east-1' }),
+  tools,
+})
+
+// Agent can now: "Go to amazon.com and find the Echo Show"
+// → Navigates, searches, reads results from a real browser
+```
+
+→ [Browser examples](./primitives/tools/browser/)
 
 ## Repository Structure
 
 ```
-├── examples/
-│   ├── tools/                    # Tools primitive examples
-│   │   ├── code-interpreter/     # Code execution examples
-│   │   ├── browser/              # Browser automation examples
-│   │   └── combined/             # Multi-tool agent examples
-│   ├── integrations/             # Framework integration examples
-│   │   ├── vercel-ai/            # Vercel AI SDK examples
-│   │   ├── langchain/            # LangChain examples (coming soon)
-│   │   └── llamaindex/           # LlamaIndex examples (coming soon)
-│   ├── runtime/                  # Runtime primitive examples (coming soon)
-│   └── identity/                 # Identity primitive examples (coming soon)
-├── docs/                         # Additional documentation
-└── shared/                       # Shared utilities across examples
+├── primitives/
+│   ├── runtime/                      # AgentCore Runtime samples
+│   │   ├── hosting-agent/            # Agent hosting (Strands, Vercel AI)
+│   │   ├── bidirectional-streaming/  # WebSocket streaming
+│   │   └── async-agent/              # Long-running tasks
+│   ├── identity/                     # AgentCore Identity samples
+│   │   ├── inbound-auth/             # Authenticate callers
+│   │   └── outbound-auth/            # Access external services
+│   └── tools/                        # AgentCore Tools samples
+│       ├── code-interpreter/         # Secure code execution
+│       └── browser/                  # Web automation
+├── use-cases/
+│   ├── customer-support-agent/       # Complete support chatbot
+│   └── data-analyzer/                # Data analysis agent
+└── .github/                          # GitHub workflows and templates
 ```
 
-## Quick Start
+## Prerequisites
 
-### Tools Examples
-
-#### Code Interpreter
-
-```bash
-npx tsx examples/tools/code-interpreter/basic.ts
-```
-
-#### Browser Automation
-
-```bash
-npx tsx examples/tools/browser/basic.ts
-```
-
-#### Combined Agent (Browser + Code Interpreter)
-
-```bash
-npx tsx examples/tools/combined/research-assistant.ts
-```
-
-### Framework Integration Examples
-
-#### Vercel AI SDK
-
-```bash
-npx tsx examples/integrations/vercel-ai/agent-with-tools.ts
-```
-
-## Examples
-
-| Category     | Example          | Description                                          |
-| ------------ | ---------------- | ---------------------------------------------------- |
-| Tools        | Code Interpreter | Execute Python code, file operations, shell commands |
-| Tools        | Browser          | Web scraping, page interaction, content extraction   |
-| Tools        | Combined         | Multi-tool research agents and data pipelines        |
-| Integrations | Vercel AI SDK    | ToolLoopAgent with streaming and tool loops          |
-| Runtime      | Coming Soon      | Managed runtime configurations                       |
-| Identity     | Coming Soon      | Authentication and authorization patterns            |
-
-## Running Examples
-
-Each example can be run individually:
-
-```bash
-# Run a specific example
-npx tsx examples/tools/browser/basic.ts
-
-# Run with a specific sub-example (where supported)
-npx tsx examples/tools/combined/research-assistant.ts example1
-```
-
-## Troubleshooting
-
-### "crypto is not defined"
-
-Each example includes a setup file that polyfills crypto for Node.js compatibility with `@ai-sdk/amazon-bedrock`.
-
-### Rate Limits / "Too many tokens"
-
-- Run examples individually rather than all at once
-- Wait 60 seconds between runs
-- Examples include `maxSteps` constraints and delays to minimize this
-
-### "Region is required"
-
-```bash
-export AWS_REGION=us-west-2
-```
-
-### "Access Denied" or "Model not found"
-
-1. Enable Claude Sonnet 4 in your AWS Bedrock console
-2. Verify IAM permissions for `bedrock:InvokeModel` and `bedrock-agentcore:*`
+- Node.js 20+
+- AWS CLI configured with credentials
+- Access to Amazon Bedrock and AgentCore
 
 ## Related Resources
 
-- [AWS Bedrock AgentCore Documentation](https://docs.aws.amazon.com/bedrock/latest/userguide/agentcore.html)
-- [AWS Bedrock AgentCore TypeScript SDK](https://github.com/awslabs/amazon-bedrock-agentcore-sdk-typescript)
-- [AWS Bedrock AgentCore Python Samples](https://github.com/awslabs/amazon-bedrock-agentcore-samples)
-- [Vercel AI SDK Documentation](https://sdk.vercel.ai/docs)
+- [Amazon Bedrock AgentCore Documentation](https://docs.aws.amazon.com/bedrock-agentcore/)
+- [Strands Agents SDK](https://strandsagents.com/)
+- [Vercel AI SDK](https://ai-sdk.dev)
+
+## Contributing
+
+We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
 
 ## Security
 
-See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
+See [SECURITY.md](SECURITY.md) for reporting vulnerabilities.
 
 ## License
 
