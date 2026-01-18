@@ -5,6 +5,7 @@
 If you discover a potential security issue in this project, we ask that you notify AWS Security via our [vulnerability reporting page](https://aws.amazon.com/security/vulnerability-reporting/) or directly via email to [aws-security@amazon.com](mailto:aws-security@amazon.com). Please do **not** create a public GitHub issue for security vulnerabilities.
 
 When reporting, please include:
+
 - Type of issue (e.g., credential exposure, injection vulnerability, etc.)
 - Full paths of source file(s) related to the issue
 - Location of affected source code (tag/branch/commit or direct URL)
@@ -37,8 +38,8 @@ const codeInterpreter = new CodeInterpreterTools({
   region: 'us-east-1',
   credentials: {
     accessKeyId: 'AKIAIOSFODNN7EXAMPLE',
-    secretAccessKey: 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY'
-  }
+    secretAccessKey: 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY',
+  },
 })
 ```
 
@@ -47,12 +48,13 @@ const codeInterpreter = new CodeInterpreterTools({
 ```typescript
 // GOOD - Let AWS SDK handle credentials
 const codeInterpreter = new CodeInterpreterTools({
-  region: 'us-east-1'
+  region: 'us-east-1',
   // Credentials loaded from environment, IAM role, or AWS config
 })
 ```
 
 **General best practices:**
+
 - Never commit AWS credentials to source control
 - Use IAM roles with least-privilege permissions
 - Rotate credentials regularly
@@ -70,7 +72,7 @@ try {
 
   const result = await codeInterpreter.executeCode({
     code: 'print("Hello, secure world!")',
-    language: 'python'
+    language: 'python',
   })
 
   console.log(result)
@@ -81,6 +83,7 @@ try {
 ```
 
 **Best practices:**
+
 - The Code Interpreter runs in isolated environments, but review any code before execution
 - Be cautious when executing code from untrusted sources
 - Monitor AWS CloudWatch for unusual activity
@@ -99,7 +102,7 @@ function isAllowedDomain(url: string): boolean {
   const allowed = ['example.com', 'trusted-site.com']
   try {
     const hostname = new URL(url).hostname
-    return allowed.some(domain => hostname === domain || hostname.endsWith(`.${domain}`))
+    return allowed.some((domain) => hostname === domain || hostname.endsWith(`.${domain}`))
   } catch {
     return false // Invalid URL
   }
@@ -114,6 +117,7 @@ if (isAllowedDomain(userUrl)) {
 ```
 
 **Best practices:**
+
 - Be mindful of the websites you automate against
 - Respect robots.txt and terms of service
 - Avoid storing sensitive data extracted from web pages
@@ -135,6 +139,7 @@ npm outdated
 ```
 
 **Best practices:**
+
 - Keep dependencies up to date
 - Review security advisories for dependencies
 - Use `npm audit` to check for known vulnerabilities
@@ -165,6 +170,7 @@ npm audit fix
 ```
 
 **GitHub Security Features:**
+
 - Enable Dependabot alerts in your repository
 - Use CodeQL for automated security scanning
 - Configure secret scanning to prevent credential commits
@@ -172,6 +178,7 @@ npm audit fix
 ## Compliance & Standards
 
 These examples follow:
+
 - [AWS Well-Architected Security Pillar](https://docs.aws.amazon.com/wellarchitected/latest/security-pillar/welcome.html)
 - [OWASP Top 10](https://owasp.org/www-project-top-ten/) guidelines
 - AWS SDK security best practices
