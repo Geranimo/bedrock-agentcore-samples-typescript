@@ -47,7 +47,7 @@ const app = new BedrockAgentCoreApp({
 })
 ```
 
-→ [Full source](./strands/src/index.ts)
+→ [Full source](./strands/agent.ts)
 
 ---
 
@@ -79,7 +79,7 @@ const app = new BedrockAgentCoreApp({
 })
 ```
 
-→ [Full source](./vercel-ai/src/index.ts)
+→ [Full source](./vercel-ai/agent.ts)
 
 ---
 
@@ -89,10 +89,9 @@ const app = new BedrockAgentCoreApp({
 cd strands  # or vercel-ai
 
 npm install
-
-make dev            # Run locally
-make build-and-push # Build and push to ECR
-make deploy         # Deploy to AgentCore
+agentcore configure
+agentcore dev       # Run locally
+agentcore deploy    # Deploy to AgentCore
 ```
 
 ## How It Works
@@ -100,8 +99,8 @@ make deploy         # Deploy to AgentCore
 ```
 ┌────────┐       ┌───────────────────────────────────┐       ┌─────────┐
 │        │       │    AgentCore Runtime Container    │       │         │
-│ Client │──────▶│                                   │──────▶│ Bedrock │
-│        │◀──────│  BedrockAgentCoreApp              │◀──────│  Model  │
+│ Client │──────▶│                                   │──────▶│   LLM   │
+│        │◀──────│  BedrockAgentCoreApp              │◀──────│         │
 │        │       │    ├── Agent                      │       │         │
 └────────┘       │    └── Tools (calculator)         │       └─────────┘
                  │                                   │

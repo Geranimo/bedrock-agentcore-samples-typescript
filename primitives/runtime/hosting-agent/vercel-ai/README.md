@@ -10,6 +10,16 @@ Deploy an agent using Vercel AI SDK to Amazon Bedrock AgentCore Runtime.
 
 → See [parent README](../README.md) for full context on hosting agents.
 
+## Prerequisites
+
+- Node.js 20+
+- AWS credentials configured
+- [AgentCore Starter Toolkit](https://github.com/aws/bedrock-agentcore-starter-toolkit):
+
+```bash
+pip install bedrock-agentcore-starter-toolkit
+```
+
 ## Implementation
 
 ```typescript
@@ -63,17 +73,39 @@ const app = new BedrockAgentCoreApp({
 app.run()
 ```
 
-→ [Full source](./src/index.ts)
+→ [Full source](./agent.ts)
 
 ## Quick Start
 
-Requires AWS credentials in your shell (for Bedrock model access).
+Install dependencies:
 
 ```bash
-make dev
+npm install
 ```
 
-## Test
+Configure the agent (specify `agent.ts` as the entrypoint):
+
+```bash
+agentcore configure
+```
+
+Accept defaults for all prompts, except for memory—enter `s` to skip memory creation.
+
+## Local Development
+
+Start the local dev server:
+
+```bash
+agentcore dev
+```
+
+Test with the CLI:
+
+```bash
+agentcore invoke --dev '{"prompt": "What is 25 * 4?"}'
+```
+
+Or with curl:
 
 ```bash
 curl -X POST http://localhost:8080/invocations \
@@ -86,36 +118,19 @@ curl -X POST http://localhost:8080/invocations \
 ## Deploy to AWS
 
 ```bash
-make build-and-push
-make deploy
+agentcore deploy
 ```
 
 ## Test Deployed Agent
 
-Invoke using AWS CLI, AWS SDKs, or HTTP requests to the AgentCore endpoint.
-
-Get the Runtime ARN from the stack outputs:
-
 ```bash
-make outputs
+agentcore invoke '{"prompt": "What is 25 * 4?"}'
 ```
 
-Invoke the deployed agent:
-
-```bash
-aws bedrock-agentcore invoke-agent-runtime \
-  --agent-runtime-arn "<RuntimeArn from outputs>" \
-  --runtime-session-id "test-session-00000000000000000001" \
-  --content-type "application/json" \
-  --accept "text/event-stream" \
-  --payload '{"prompt": "What is 25 * 4?"}' \
-  --cli-binary-format raw-in-base64-out \
-  --region us-east-1 \
-  /dev/stdout
-```
+After deployment, your agent can also be invoked via AWS SDKs, APIs, or HTTP requests.
 
 ## Clean Up
 
 ```bash
-make delete
+agentcore destroy
 ```

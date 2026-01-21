@@ -2,11 +2,11 @@
 
 This sample demonstrates WebSocket bidirectional communication on AgentCore Runtime.
 
-|                         |                          |
-| ----------------------- | ------------------------ |
-| **AgentCore component** | Runtime                  |
-| **Protocol**            | HTTP (WebSocket upgrade) |
-| **Pattern**             | Echo server              |
+|                         |                  |
+| ----------------------- | ---------------- |
+| **AgentCore component** | Runtime          |
+| **Protocol**            | HTTP (WebSocket) |
+| **Pattern**             | Echo server      |
 
 ## What This Sample Demonstrates
 
@@ -23,6 +23,16 @@ Unlike HTTP request/response, WebSocket enables full-duplex communication — bo
 - **Live updates** — Server pushes data as it becomes available
 - **Voice/audio** — Continuous audio streaming (future: Nova Sonic integration)
 
+## Prerequisites
+
+- Node.js 20+
+- AWS credentials configured (for deployment)
+- [AgentCore Starter Toolkit](https://github.com/aws/bedrock-agentcore-starter-toolkit):
+
+```bash
+pip install bedrock-agentcore-starter-toolkit
+```
+
 ## Implementation
 
 ```typescript
@@ -33,7 +43,7 @@ const app = new BedrockAgentCoreApp({
   // HTTP handler (required)
   invocationHandler: {
     process: async (_request, _context) => {
-      return { message: 'Use WebSocket endpoint /ws' }
+      return { message: 'Use WebSocket endpoint /ws for bidirectional streaming' }
     },
   },
 
@@ -63,14 +73,30 @@ const app = new BedrockAgentCoreApp({
 app.run()
 ```
 
-→ [Full source](./src/index.ts)
+→ [Full source](./agent.ts)
 
 ## Quick Start
 
-No AWS credentials required (this is a simple echo server).
+Install dependencies:
 
 ```bash
-make dev
+npm install
+```
+
+Configure the agent (specify `agent.ts` as the entrypoint):
+
+```bash
+agentcore configure
+```
+
+Accept defaults for all prompts, except for memory—enter `s` to skip memory creation.
+
+## Local Development
+
+Start the local dev server (no AWS credentials required for this echo server):
+
+```bash
+agentcore dev
 ```
 
 ## Test - Local Development
@@ -98,27 +124,22 @@ Connected
 ## Deploy to AgentCore
 
 ```bash
-make build-and-push
-make deploy
+agentcore deploy
 ```
 
 ## Test - Deployed Runtime
 
-Deployed runtimes require authenticated WebSocket connections (see [Invoking an Agent](../../README.md#invoking-an-agent)).
+Deployed runtimes require authenticated WebSocket connections. Use the included test client which handles IAM authentication.
 
 ### Using the Test Client
 
 ```bash
-# Get runtime ARN from deployment
-make outputs
-
-# Run the test client (uses IAM authentication)
 npm run test:deployed -- "<runtime-arn>"
 ```
 
 ### How It Works
 
-The test client ([src/client.ts](./src/client.ts)) uses `RuntimeClient` to handle SigV4 signing:
+The test client ([client.ts](./client.ts)) uses `RuntimeClient` to handle SigV4 signing:
 
 ```typescript
 import { RuntimeClient } from 'bedrock-agentcore/runtime'
@@ -139,6 +160,12 @@ const ws = new WebSocket(url, { headers })
 - AWS credential resolution (environment, profile, IAM role)
 - SigV4 request signing
 - Session ID generation
+
+## Clean Up
+
+```bash
+agentcore destroy
+```
 
 ## Key Concepts
 
