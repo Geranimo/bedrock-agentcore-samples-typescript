@@ -156,3 +156,7 @@ See [SECURITY.md](SECURITY.md) for reporting vulnerabilities.
 ## License
 
 This project is licensed under the Apache-2.0 License. See the [LICENSE](LICENSE) file.
+
+## Disclaimer
+
+These samples are provided for illustrative purposes and are designed for customers to adapt for their production use cases, not to be used as-is.
