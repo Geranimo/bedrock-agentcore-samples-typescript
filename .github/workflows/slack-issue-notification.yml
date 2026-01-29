@@ -1,5 +1,7 @@
 name: Slack Issue Notification
 
+permissions: {}
+
 on:
   issues:
     types: [opened]
