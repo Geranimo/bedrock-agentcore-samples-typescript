@@ -23,5 +23,3 @@ jobs:
             issue_body: ${{ toJSON(github.event.issue.body) }}
             repository: "${{ github.repository }}"
             created_at: "${{ github.event.issue.created_at }}"
-
-
