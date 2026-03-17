@@ -30,7 +30,12 @@ let browser: PlaywrightBrowser | null = null
 
 function log(message: string): void {
   const now = new Date()
-  const timestamp = now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })
+  const timestamp = now.toLocaleTimeString('en-US', {
+    hour12: false,
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  })
   const entry = `${timestamp} ${message}`
   agentState.logs.push(entry)
   console.log(`[agent] ${entry}`)
@@ -42,42 +47,77 @@ const TOOL_CONFIG: ToolConfiguration = {
       toolSpec: {
         name: 'navigate',
         description: 'Navigate the browser to a URL.',
-        inputSchema: { json: { type: 'object', properties: { url: { type: 'string', description: 'URL to navigate to' } }, required: ['url'] } },
+        inputSchema: {
+          json: {
+            type: 'object',
+            properties: { url: { type: 'string', description: 'URL to navigate to' } },
+            required: ['url'],
+          },
+        },
       },
     },
     {
       toolSpec: {
         name: 'click',
         description: 'Click an element by CSS selector.',
-        inputSchema: { json: { type: 'object', properties: { selector: { type: 'string', description: 'CSS selector' } }, required: ['selector'] } },
+        inputSchema: {
+          json: {
+            type: 'object',
+            properties: { selector: { type: 'string', description: 'CSS selector' } },
+            required: ['selector'],
+          },
+        },
       },
     },
     {
       toolSpec: {
         name: 'type',
         description: 'Type text into an input element.',
-        inputSchema: { json: { type: 'object', properties: { selector: { type: 'string', description: 'CSS selector' }, text: { type: 'string', description: 'Text to type' } }, required: ['selector', 'text'] } },
+        inputSchema: {
+          json: {
+            type: 'object',
+            properties: {
+              selector: { type: 'string', description: 'CSS selector' },
+              text: { type: 'string', description: 'Text to type' },
+            },
+            required: ['selector', 'text'],
+          },
+        },
       },
     },
     {
       toolSpec: {
         name: 'getText',
         description: 'Get text content of the page or a specific element.',
-        inputSchema: { json: { type: 'object', properties: { selector: { type: 'string', description: 'CSS selector (omit for full page)' } }, required: [] } },
+        inputSchema: {
+          json: {
+            type: 'object',
+            properties: { selector: { type: 'string', description: 'CSS selector (omit for full page)' } },
+            required: [],
+          },
+        },
       },
     },
     {
       toolSpec: {
         name: 'getHtml',
         description: 'Get HTML content of the page or a specific element.',
-        inputSchema: { json: { type: 'object', properties: { selector: { type: 'string', description: 'CSS selector (omit for full page)' } }, required: [] } },
+        inputSchema: {
+          json: {
+            type: 'object',
+            properties: { selector: { type: 'string', description: 'CSS selector (omit for full page)' } },
+            required: [],
+          },
+        },
       },
     },
     {
       toolSpec: {
         name: 'pressKey',
         description: 'Press a keyboard key, e.g. "Enter", "Tab".',
-        inputSchema: { json: { type: 'object', properties: { key: { type: 'string', description: 'Key name' } }, required: ['key'] } },
+        inputSchema: {
+          json: { type: 'object', properties: { key: { type: 'string', description: 'Key name' } }, required: ['key'] },
+        },
       },
     },
   ],
@@ -223,7 +263,10 @@ export async function runAgent(prompt: string): Promise<void> {
 
         messages.push({ role: 'user', content: toolResultBlocks })
       } else {
-        const finalText = outputContent.filter((b) => b.text).map((b) => b.text).join('\n')
+        const finalText = outputContent
+          .filter((b) => b.text)
+          .map((b) => b.text)
+          .join('\n')
         agentState.result = finalText || 'Agent completed.'
         agentState.status = 'completed'
         log('Agent completed successfully')

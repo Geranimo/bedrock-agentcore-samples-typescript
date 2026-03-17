@@ -10,7 +10,7 @@
     "dev:client": "vite",
     "build": "tsc --noEmit && vite build"
   },
-"dependencies": {
+  "dependencies": {
     "@aws-sdk/client-bedrock-runtime": "^3.700.0",
     "@babel/runtime": "^7.0.0",
     "@cloudscape-design/components": "^3.0.0",
@@ -22,7 +22,7 @@
     "prop-types": "^15.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
-},
+  },
   "devDependencies": {
     "@types/react": "^18.2.79",
     "@types/react-dom": "^18.2.25",

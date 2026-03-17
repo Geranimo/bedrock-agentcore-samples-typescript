@@ -82,14 +82,14 @@ The live view panel streams the agent's browser session while the activity log s
 
 The server reads all configuration from environment variables:
 
-| Variable | Default | Description |
-|---|---|---|
-| `AWS_ACCESS_KEY_ID` | (required) | AWS access key |
-| `AWS_SECRET_ACCESS_KEY` | (required) | AWS secret key |
-| `AWS_SESSION_TOKEN` | (optional) | Session token for temporary credentials |
-| `AWS_REGION` | `us-west-2` | AWS region |
-| `BEDROCK_MODEL_ID` | `anthropic.claude-sonnet-4-20250514-v1:0` | Bedrock model for the agent |
-| `BROWSER_IDENTIFIER` | `aws.browser.v1` | AgentCore browser identifier |
+| Variable                | Default                                   | Description                             |
+| ----------------------- | ----------------------------------------- | --------------------------------------- |
+| `AWS_ACCESS_KEY_ID`     | (required)                                | AWS access key                          |
+| `AWS_SECRET_ACCESS_KEY` | (required)                                | AWS secret key                          |
+| `AWS_SESSION_TOKEN`     | (optional)                                | Session token for temporary credentials |
+| `AWS_REGION`            | `us-west-2`                               | AWS region                              |
+| `BEDROCK_MODEL_ID`      | `anthropic.claude-sonnet-4-20250514-v1:0` | Bedrock model for the agent             |
+| `BROWSER_IDENTIFIER`    | `aws.browser.v1`                          | AgentCore browser identifier            |
 
 To use a different model:
 
@@ -121,11 +121,7 @@ export BEDROCK_MODEL_ID=amazon.nova-pro-v1:0
 ```tsx
 import { BrowserLiveView } from 'bedrock-agentcore/browser/live-view'
 
-<BrowserLiveView
-  signedUrl={presignedUrl}
-  remoteWidth={1920}
-  remoteHeight={1080}
-/>
+;<BrowserLiveView signedUrl={presignedUrl} remoteWidth={1920} remoteHeight={1080} />
 ```
 
 **Generating the presigned URL (server side):**
