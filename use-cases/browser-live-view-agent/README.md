@@ -120,7 +120,6 @@ export BEDROCK_MODEL_ID=amazon.nova-pro-v1:0
 
 ```tsx
 import { BrowserLiveView } from 'bedrock-agentcore/browser/live-view'
-
 ;<BrowserLiveView signedUrl={presignedUrl} remoteWidth={1920} remoteHeight={1080} />
 ```
 
